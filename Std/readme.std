@@ -1,0 +1,22 @@
+This archive always contains the latest versions of the standard include file
+std.inc and the common basic types unit BTypes.
+
+Versions 1.32+ of std.inc define {$asmmode intel} if compiled with FPC
+for CPUI386. If the compiler complains about asm code, this definition
+could normally be deleted.
+
+Looking backward it was suboptimal to include {$asmmode intel} in
+std.inc. In order to not break (or not disturb too much) existing
+packages, I decided to enable it only for I386. On the long run it will
+be deleted from std.inc and {$asmmode intel} will be placed in the units
+which really needs the directive.
+
+Since Nov. 2008 the BTypes V=0.16+ is included in this standard archive,
+because it is/will be used to improve the portability of many other units.
+
+Last changes (Aug. 2018)
+
+- Standard include file std.inc V1.70 defines HAS_FP_CAST (typecast for
+  floating point available, e.g. double(1))
+
+http://wolfgang-ehrhardt.de

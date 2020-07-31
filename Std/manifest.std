@@ -1,0 +1,11 @@
+#c_tbtyp.bat       Compile batch for t_btypes.pas
+$log_std.zip       Archive with log files of final tests done before release
+btypes.pas         Common basic type definitions
+copying_we.txt     WE's license
+legal.txt          Legal notice (cryptography, software patents)
+manifest.std       This file
+readme.std         Info about this archive
+std.inc            Standard definitions and options
+t_btypes.pas       Simple test program for BTypes unit
+_comparm           Compile / log script for Raspberry Pi
+
