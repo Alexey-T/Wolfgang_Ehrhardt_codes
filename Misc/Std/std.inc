@@ -488,6 +488,10 @@
     {$define EXT64}       {No extended for ARM}
     {$define PurePascal}
   {$endif}
+  {$ifdef CPUAARCH64}
+    {$define EXT64}       {No extended for AArch64}
+    {$define PurePascal}
+  {$endif}
 {$endif}
 
 {$ifdef __TMT__}
