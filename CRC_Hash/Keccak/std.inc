@@ -2,7 +2,7 @@
 
  DESCRIPTION     :  Standard definitions and options
 
- REQUIREMENTS    :  TP5-7, D1-D7/D9-D12/D14-D17, FPC, VP, (TPW1.0/1.5,BCB3/4)
+ REQUIREMENTS    :  TP5-7, D1-D7/D9-D12/D14-D26, FPC, VP, (TPW1.0/1.5,BCB3/4)
 
  Version  Date      Author      Modification
  -------  --------  -------     ------------------------------------------
@@ -61,11 +61,32 @@
  1.53     01.12.12  we          Simplified FPC 2.X.Y definitions
  1.54     17.12.12  we          UNIT_SCOPE (D16/D17)
  1.55     25.12.12  we          J_OPT for BIT64
+ 1.56     25.04.13  we          D18/XE4 (VER250)
+ 1.57     28.09.13  we          Basic support for D19/XE5 (VER260)
+ 1.58     17.04.14  we          Basic support for D20/XE6 (VER270)
+ 1.59     06.05.14  we          FPC/CPUARM: $define EXT64, i.e. no FP 80-bit extended
+ 1.60     13.09.14  we          Basic support for D21/XE7 (VER280)
+ 1.61     22.10.14  we          HAS_OUT
+ 1.62     13.01.15  we          FPC VER3 (FPC3.0.1/3.1.1), FPC2Plus, FPC271or3
+ 1.63     22.04.15  we          Basic support for D22/XE8 (VER290)
+ 1.64     25.04.15  we          HAS_INTXX, HAS_PINTXX
+ 1.65     01.09.15  we          Basic support for D23 (VER300) 'Seattle'
+ 1.66     26.04.16  we          Basic support for D24 (VER310) 'Berlin'
+ 1.67     17.03.17  we          Define PurePascal for FPC/CPUARM
+ 1.68     11.04.17  we          Basic support for D25 (VER320) 'Tokyo'
+ 1.69     03.12.17  we          D22PLUS - Delphi 22 / VER290 / XE8 or higher: has system.hash
+ 1.70     02.08.18  we          HAS_FP_CAST (typecast for FP constants, e.g. double(1))
+ 1.71     04.10.18  we          Symbol FPC32Plus, avoid silly FPC32+ warnings
+ 1.72     08.10.18  we          Symbol FPC3Plus, avoid silly FPC3+ warnings
+ 1.73     24.10.18  we          Symbol D15Plus (for FormatSettings.DecimalSeparator)
+ 1.74     22.11.18  we          Basic support for D26 (VER330) 'Rio'
+ 1.75     23.11.18  we          Define DELPHI ifdef CONDITIONALEXPRESSIONS
+ 1.76     01.08.20  Alextp      Support FPC/AArch64
 **************************************************************************)
 
 
 (*-------------------------------------------------------------------------
- (C) Copyright 2002-2012 Wolfgang Ehrhardt
+ (C) Copyright 2002-2018 Wolfgang Ehrhardt
 
  This software is provided 'as-is', without any express or implied warranty.
  In no event will the authors be held liable for any damages arising from
@@ -108,6 +129,7 @@
 {.$undef HAS_CARD32}     {Has 32 bit cardinal}
 {.$undef HAS_MSG}        {Has message directive}
 {.$undef HAS_INLINE}     {Has inline procs/funcs (D9)}
+{.$undef HAS_OUT}        {Has OUT parameters: D3+, FPC2+ Delphi/ObjFPC}
 {.$undef ABSTRACT}       {Has abstract methods}
 {.$undef DEFAULT}        {Support default parameters}
 {.$undef VER5X}          {TP5 or TP55}
@@ -115,11 +137,20 @@
 {.$undef HAS_UNSAFE}     {UNSAFE warnings}
 {.$undef APPCONS}        {Needs "Apptype console" for console application}
 {.$undef FPC_ProcVar}    {FPC handling of @ and proc variables}
+{.$undef FPC2Plus}       {FPC 2 or newer}
+{.$undef FPC3Plus}       {FPC 3 or newer}
+{.$undef FPC32Plus}      {FPC 3.2 or newer}
+{.$undef FPC271or3}      {FPC 271 or 3 (less accurate for 64 bit or SSE2)}
 {.$undef D12PLUS}        {Delphi 12 or higher}
+{.$undef D15Plus}        {Delphi 21 / VER280, Formatsettings.create}
+{.$undef D22PLUS}        {Delphi 22 / VER290 / XE8 or higher, has system.hash}
 {.$undef HAS_OVERLOAD}   {Overloading of procedures and functions}
 {.$undef HAS_DENORM_LIT} {Denormalised (extended) literals, e.g. -1.23e-4942}
 {.$undef EXT64}          {64 bit extended = double}
 {.$undef UNIT_SCOPE}     {Unit scope name, D16+}
+{.$undef HAS_INTXX}      {Int8 .. Int32, UInt8 .. UInt32}
+{.$undef HAS_PINTXX}     {pInt8 .. pInt32, pUInt8 .. pUInt32}
+{.$undef HAS_FP_CAST}    {typecast for FP constants, e.g. double(1))}
 
 
 {$define CONST}     {const in proc declaration}
@@ -205,10 +236,12 @@
 {$ifdef VER100}
   {$define DELPHI}  {D3}
   {$define HAS_ASSERT}
+  {$define HAS_OUT}
 {$endif}
 
 {$ifdef VER110}
   {$define DELPHI}  {BCB3}
+  {$define HAS_OUT}
 {$endif}
 
 {$ifdef VER120}
@@ -266,18 +299,74 @@
 
 {$ifdef VER220}
   {$define DELPHI}  {D15 - XE}
-  {$define D12PLUS}
+  {$define D15PLUS}
 {$endif}
 
 {$ifdef VER230}
   {$define DELPHI}  {D16 - XE2}
-  {$define D12PLUS}
+  {$define D15PLUS}
   {$define UNIT_SCOPE}
 {$endif}
 
 {$ifdef VER240}
   {$define DELPHI}  {D17 - XE3}
+  {$define D15PLUS}
+  {$define UNIT_SCOPE}
+{$endif}
+
+{$ifdef VER250}
+  {$define DELPHI}  {D18 - XE4}
+  {$define D15PLUS}
+  {$define UNIT_SCOPE}
+{$endif}
+
+{$ifdef VER260}
+  {$define DELPHI}  {D19 - XE5}
+  {$define D15PLUS}
+  {$define UNIT_SCOPE}
+{$endif}
+
+{$ifdef VER270}
+  {$define DELPHI}  {D20 - XE6}
+  {$define D15PLUS}
+  {$define UNIT_SCOPE}
+{$endif}
+
+{$ifdef VER280}
+  {$define DELPHI}  {D21 - XE7}
+  {$define D15Plus}
+  {$define UNIT_SCOPE}
+{$endif}
+
+{$ifdef VER290}
+  {$define DELPHI}  {D22 - XE8}
+  {$define D22PLUS}
+  {$define UNIT_SCOPE}
+{$endif}
+
+{$ifdef VER300}
+  {$define DELPHI}  {D23}
+  {$define D22PLUS}
+  {$define UNIT_SCOPE}
+{$endif}
+
+{$ifdef VER310}
+  {$define DELPHI}  {D24}
+  {$define D22PLUS}
+  {$define UNIT_SCOPE}
+{$endif}
+
+{$ifdef VER320}
+  {$define DELPHI}  {D25}
+  {$define D22PLUS}
+  {$define UNIT_SCOPE}
+  {$define HAS_FP_CAST}
+{$endif}
+
+{$ifdef VER330}
+  {$define DELPHI}  {D25}
   {$define D12PLUS}
+  {$define D22PLUS}
   {$define UNIT_SCOPE}
 {$endif}
 
@@ -290,6 +379,16 @@
   {$ifdef CPUX64}
     {$define BIT64}
   {$endif}
+  {$define DELPHI}
+{$endif}
+
+{$ifdef D15Plus}
+  {$define D12PLUS}
+{$endif}
+
+{$ifdef D22Plus}
+  {$define D12PLUS}
+  {$define D15Plus}
 {$endif}
 
 {$ifdef VER70}
@@ -317,6 +416,7 @@
   {$define ABSTRACT}
   {$define HAS_XTYPES}
   {$define HAS_OVERLOAD}
+  {$define HAS_FP_CAST}
   {$undef N_OPT}
   {$ifdef VER1}
     {$undef  J_OPT}
@@ -332,6 +432,7 @@
     {$endif}
   {$endif}
   {$ifdef VER2}
+    {$define FPC2Plus}
     {$define HAS_ASSERT}
     {$define HAS_INT64}
     {$define HAS_CARD32}
@@ -350,23 +451,73 @@
       {$endif}
       {$define HAS_DENORM_LIT}  {2.1+}
     {$endif}
+    {$ifdef VER2_7_1}
+      {$define FPC271or3}
+    {$endif}
+    {$ifdef VER2_6_2}
+      {$define HAS_INTXX}
+    {$endif}
+    {$ifdef VER2_6_4}
+      {$define HAS_INTXX}
+      {$define HAS_PINTXX}
+    {$endif}
   {$endif}
+  {$ifdef VER3}
+    {$define FPC2Plus}
+    {$define FPC3Plus}
+    {$define FPC271or3}
+    {$define HAS_ASSERT}
+    {$define HAS_INT64}
+    {$define HAS_CARD32}
+    {$define HAS_MSG}
+    {$define HAS_INLINE}
+    {$define HAS_UINT64}
+    {$define HAS_DENORM_LIT}
+    {$define StrictLong}
+    {$define HAS_INTXX}
+    {$define HAS_PINTXX}
+    {$ifdef FPC_OBJFPC}
+      {$define DEFAULT}
+    {$endif}
+    {$ifdef FPC_DELPHI}
+      {$define DEFAULT}
+    {$endif}
+    {$ifdef VER3_2_0}
+      {$define FPC32Plus}
+    {$endif}
+    {$ifdef VER3_3_1}
+      {$define FPC32Plus}
+    {$endif}
+  {$endif}
+
   {Note: Mode detection does not work for -Sxxx and version < 2.0.2}
   {$ifdef FPC_OBJFPC}
     {$define RESULT}
+    {$define HAS_OUT}
   {$endif}
   {$ifdef FPC_DELPHI}
     {$define RESULT}
+    {$define HAS_OUT}
     {$undef FPC_ProcVar}
+    {$undef HAS_FP_CAST}  {Typecast allowed but buggy}
   {$endif}
   {$ifdef FPC_TP}
     {$undef FPC_ProcVar}
+    {$undef HAS_FP_CAST}  {Typecast allowed but buggy}
   {$endif}
   {$ifdef FPC_GPC}
     {$undef FPC_ProcVar}
   {$endif}
   {$ifdef CPU64}
     {$define BIT64}
+  {$endif}
+  {$ifdef CPUARM}
+    {$define EXT64}       {No extended for ARM}
+    {$define PurePascal}
+  {$endif}
+  {$ifdef CPUAARCH64}
+    {$define EXT64}       {No extended for ARM}
+    {$define PurePascal}
   {$endif}
 {$endif}
 
@@ -406,9 +557,11 @@
   {$define HAS_INLINE}
   {$define HAS_UNSAFE}
   {$define HAS_UINT64}
+  {$define HAS_INTXX}
 {$endif}
 
 {$ifdef D4Plus}
+  {$define HAS_OUT}
   {$define HAS_INT64}
   {$define HAS_CARD32}
   {$define StrictLong}
@@ -509,6 +662,18 @@
     {$warn UNSAFE_TYPE OFF}
     {$warn UNSAFE_CODE OFF}
     {$warn UNSAFE_CAST OFF}
+  {$endif}
+{$endif}
+
+{$ifdef FPC3Plus}
+  {$ifndef debug}
+    {These directives are sometimes not working if used immediately    }
+    {before the code, so they are used 'globally' if not in debug mode.}
+    {Without them e.g. some setlength() will produse a 5089 warning    }
+    {For FPC < 3.2 this happens with optimization -O3 or -O4           }
+   {$warn 5036 OFF} {Local variable "??" does not seem to be initialized}
+   {$warn 5037 OFF} {Variable "??" does not seem to be initialized      }
+   {$warn 5089 OFF} {Suppress silly warning: Local variable "??" of a managed type does not seem to be initialized}
   {$endif}
 {$endif}
 

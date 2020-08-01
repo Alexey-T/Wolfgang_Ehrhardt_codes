@@ -2,7 +2,7 @@
 
  DESCRIPTION     :  Standard definitions and options
 
- REQUIREMENTS    :  TP5-7, D1-D7/D9-D12/D14-D25, FPC, VP, (TPW1.0/1.5,BCB3/4)
+ REQUIREMENTS    :  TP5-7, D1-D7/D9-D12/D14-D26, FPC, VP, (TPW1.0/1.5,BCB3/4)
 
  Version  Date      Author      Modification
  -------  --------  -------     ------------------------------------------
@@ -76,7 +76,12 @@
  1.68     11.04.17  we          Basic support for D25 (VER320) 'Tokyo'
  1.69     03.12.17  we          D22PLUS - Delphi 22 / VER290 / XE8 or higher: has system.hash
  1.70     02.08.18  we          HAS_FP_CAST (typecast for FP constants, e.g. double(1))
-
+ 1.71     04.10.18  we          Symbol FPC32Plus, avoid silly FPC32+ warnings
+ 1.72     08.10.18  we          Symbol FPC3Plus, avoid silly FPC3+ warnings
+ 1.73     24.10.18  we          Symbol D15Plus (for FormatSettings.DecimalSeparator)
+ 1.74     22.11.18  we          Basic support for D26 (VER330) 'Rio'
+ 1.75     23.11.18  we          Define DELPHI ifdef CONDITIONALEXPRESSIONS
+ 1.76     01.08.20  Alextp      Support FPC/AArch64
 **************************************************************************)
 
 
@@ -133,8 +138,11 @@
 {.$undef APPCONS}        {Needs "Apptype console" for console application}
 {.$undef FPC_ProcVar}    {FPC handling of @ and proc variables}
 {.$undef FPC2Plus}       {FPC 2 or newer}
+{.$undef FPC3Plus}       {FPC 3 or newer}
+{.$undef FPC32Plus}      {FPC 3.2 or newer}
 {.$undef FPC271or3}      {FPC 271 or 3 (less accurate for 64 bit or SSE2)}
 {.$undef D12PLUS}        {Delphi 12 or higher}
+{.$undef D15Plus}        {Delphi 21 / VER280, Formatsettings.create}
 {.$undef D22PLUS}        {Delphi 22 / VER290 / XE8 or higher, has system.hash}
 {.$undef HAS_OVERLOAD}   {Overloading of procedures and functions}
 {.$undef HAS_DENORM_LIT} {Denormalised (extended) literals, e.g. -1.23e-4942}
@@ -291,74 +299,76 @@
 
 {$ifdef VER220}
   {$define DELPHI}  {D15 - XE}
-  {$define D12PLUS}
+  {$define D15PLUS}
 {$endif}
 
 {$ifdef VER230}
   {$define DELPHI}  {D16 - XE2}
-  {$define D12PLUS}
+  {$define D15PLUS}
   {$define UNIT_SCOPE}
 {$endif}
 
 {$ifdef VER240}
   {$define DELPHI}  {D17 - XE3}
-  {$define D12PLUS}
+  {$define D15PLUS}
   {$define UNIT_SCOPE}
 {$endif}
 
 {$ifdef VER250}
   {$define DELPHI}  {D18 - XE4}
-  {$define D12PLUS}
+  {$define D15PLUS}
   {$define UNIT_SCOPE}
 {$endif}
 
 {$ifdef VER260}
   {$define DELPHI}  {D19 - XE5}
-  {$define D12PLUS}
+  {$define D15PLUS}
   {$define UNIT_SCOPE}
 {$endif}
 
 {$ifdef VER270}
   {$define DELPHI}  {D20 - XE6}
-  {$define D12PLUS}
+  {$define D15PLUS}
   {$define UNIT_SCOPE}
 {$endif}
 
 {$ifdef VER280}
   {$define DELPHI}  {D21 - XE7}
-  {$define D12PLUS}
+  {$define D15Plus}
   {$define UNIT_SCOPE}
 {$endif}
 
 {$ifdef VER290}
   {$define DELPHI}  {D22 - XE8}
-  {$define D12PLUS}
   {$define D22PLUS}
   {$define UNIT_SCOPE}
 {$endif}
 
 {$ifdef VER300}
   {$define DELPHI}  {D23}
-  {$define D12PLUS}
   {$define D22PLUS}
   {$define UNIT_SCOPE}
 {$endif}
 
 {$ifdef VER310}
   {$define DELPHI}  {D24}
-  {$define D12PLUS}
   {$define D22PLUS}
   {$define UNIT_SCOPE}
 {$endif}
 
 {$ifdef VER320}
   {$define DELPHI}  {D25}
-  {$define D12PLUS}
   {$define D22PLUS}
   {$define UNIT_SCOPE}
   {$define HAS_FP_CAST}
 {$endif}
 
+{$ifdef VER330}
+  {$define DELPHI}  {D25}
+  {$define D12PLUS}
+  {$define D22PLUS}
+  {$define UNIT_SCOPE}
+{$endif}
 
 {$ifdef CONDITIONALEXPRESSIONS}  {D6+}
   {$ifndef D4PLUS}
@@ -369,6 +379,16 @@
   {$ifdef CPUX64}
     {$define BIT64}
   {$endif}
+  {$define DELPHI}
+{$endif}
+
+{$ifdef D15Plus}
+  {$define D12PLUS}
+{$endif}
+
+{$ifdef D22Plus}
+  {$define D12PLUS}
+  {$define D15Plus}
 {$endif}
 
 {$ifdef VER70}
@@ -444,6 +464,7 @@
   {$endif}
   {$ifdef VER3}
     {$define FPC2Plus}
+    {$define FPC3Plus}
     {$define FPC271or3}
     {$define HAS_ASSERT}
     {$define HAS_INT64}
@@ -460,6 +481,12 @@
     {$endif}
     {$ifdef FPC_DELPHI}
       {$define DEFAULT}
+    {$endif}
+    {$ifdef VER3_2_0}
+      {$define FPC32Plus}
+    {$endif}
+    {$ifdef VER3_3_1}
+      {$define FPC32Plus}
     {$endif}
   {$endif}
 
@@ -489,7 +516,7 @@
     {$define PurePascal}
   {$endif}
   {$ifdef CPUAARCH64}
-    {$define EXT64}       {No extended for AArch64}
+    {$define EXT64}       {No extended for ARM}
     {$define PurePascal}
   {$endif}
 {$endif}
@@ -635,6 +662,18 @@
     {$warn UNSAFE_TYPE OFF}
     {$warn UNSAFE_CODE OFF}
     {$warn UNSAFE_CAST OFF}
+  {$endif}
+{$endif}
+
+{$ifdef FPC3Plus}
+  {$ifndef debug}
+    {These directives are sometimes not working if used immediately    }
+    {before the code, so they are used 'globally' if not in debug mode.}
+    {Without them e.g. some setlength() will produse a 5089 warning    }
+    {For FPC < 3.2 this happens with optimization -O3 or -O4           }
+   {$warn 5036 OFF} {Local variable "??" does not seem to be initialized}
+   {$warn 5037 OFF} {Variable "??" does not seem to be initialized      }
+   {$warn 5089 OFF} {Suppress silly warning: Local variable "??" of a managed type does not seem to be initialized}
   {$endif}
 {$endif}
 
