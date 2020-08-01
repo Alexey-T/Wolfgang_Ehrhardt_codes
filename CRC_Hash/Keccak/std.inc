@@ -82,6 +82,7 @@
  1.74     22.11.18  we          Basic support for D26 (VER330) 'Rio'
  1.75     23.11.18  we          Define DELPHI ifdef CONDITIONALEXPRESSIONS
  1.76     01.08.20  Alextp      Support FPC/AArch64
+ 1.77     01.08.20  Alextp      Support D10.4 'Sydney' (VER340)
 **************************************************************************)
 
 
@@ -364,8 +365,13 @@
 {$endif}
 
 {$ifdef VER330}
-  {$define DELPHI}  {D25}
-  {$define D12PLUS}
+  {$define DELPHI}  {D26}
+  {$define D22PLUS}
+  {$define UNIT_SCOPE}
+{$endif}
+
+{$ifdef VER340}
+  {$define DELPHI}  {D27}
   {$define D22PLUS}
   {$define UNIT_SCOPE}
 {$endif}
