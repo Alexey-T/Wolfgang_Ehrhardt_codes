@@ -61,6 +61,9 @@
   {$ifdef CPUARM}
     {$define MPC_PurePascal}
   {$endif}
+  {$ifdef CPUAARCH64}
+    {$define MPC_PurePascal}
+  {$endif}
 {$endif}
 
 
