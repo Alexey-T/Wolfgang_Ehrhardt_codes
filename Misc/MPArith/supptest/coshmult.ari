@@ -1,0 +1,35 @@
+(*
+**
+** (c) W.Ehrhardt Aug 2005
+**
+** Calculates coshmult test cases. Because ARIBAS inserts _ and \n
+** file t#coshm.dat must be edited for WE's mp_int test:
+** 1. change _\n to _
+** 2. delete _
+**
+*)
+
+function ctest(): integer;
+var
+  a,q,n: integer;
+  m,i,k: integer;
+  f: file;
+begin
+  open_write(f,"t#coshm.dat");
+  writeln(f,"line4 = mod_coshmult(line1, line2, line3)");
+  m := 4;
+  for k:=1 to 50 do
+    for i:=1 to 4 do
+      n := 1+random(m);
+      a := random(2*m)-m;
+      q := 1+random(m) div 2;
+      writeln(f);
+      writeln(f,a);
+      writeln(f,q);
+      writeln(f,n);
+      writeln(f,mod_coshmult(a,q,n));
+      m := m*2;
+    end;
+  end;
+  close(f);
+end;

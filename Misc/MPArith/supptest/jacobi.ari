@@ -1,0 +1,33 @@
+(*
+**
+** (c) W.Ehrhardt Feb 2005
+**
+** Calculates Jacobi test cases. Because ARIBAS inserts _ and \n
+** file t#jac.dat must be edited for WE's mp_int test:
+** 1. change _\n to _
+** 2. delete _
+**
+*)
+
+function jtest(): integer;
+var
+  a,p,k,i: integer;
+  m: integer;
+  f: file;
+begin
+  open_write(f,"t#jac.dat");
+  writeln(f,"line3 = jacobi(line1, line2)");
+  m := 2;
+  for k:=1 to 100 do
+    for i:=1 to 4 do
+      p := 3+random(m)*2;
+      a := random(m) - (m div 2);
+      writeln(f);
+      writeln(f,a);
+      writeln(f,p);
+      writeln(f,jacobi(a,p));
+      m := m*2;
+    end;
+  end;
+  close(f);
+end;

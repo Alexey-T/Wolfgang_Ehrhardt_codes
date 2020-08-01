@@ -1,0 +1,45 @@
+(*
+** (c) W.Ehrhardt July 2007
+**
+** Calculates pell/pell4 test cases. Because ARIBAS inserts _ and \n
+** files t#pell?.dat must be edited for WE's mp_int test:
+** 1. change _\n to _
+** 2. delete _
+**
+** Uses O. Forster's ARIBAS Code from chap25.ari
+**
+*)
+
+load("chap25.ari");
+
+
+function ptest(): integer;
+var
+  i,d,r: integer;
+  z: array[3];
+  f1,f4: file;
+begin
+  open_write(f1,"t#pell1.dat");
+  open_write(f4,"t#pell4.dat");
+  writeln(f1,"line2**2 - line1 * line3**2 = 1");
+  writeln(f4,"line2**2 - line1 * line3**2 = line4");
+  d := 2;
+  for i:=1 to 100 do
+    d := d+i**2;
+    if d /= isqrt(d)**2 then
+      writeln(f4);
+      z := pell4(d);
+      writeln(f4,d);
+      writeln(f4,z[0]);
+      writeln(f4,z[1]);
+      writeln(f4,z[2]);
+      z := pell(d);
+      writeln(f1);
+      writeln(f1,d);
+      writeln(f1,z[0]);
+      writeln(f1,z[1]);
+    end;
+  end;
+  close(f1);
+  close(f4);
+end;

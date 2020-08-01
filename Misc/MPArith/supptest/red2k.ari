@@ -1,0 +1,38 @@
+(*
+**
+** (c) W.Ehrhardt Aug. 2006
+**
+** Calculates reduce_2k test cases. Because ARIBAS inserts _ and \n
+** file t#red2k.dat must be edited for WE's mp_int test:
+** 1. change _\n to _
+** 2. delete _
+**
+*)
+
+function ctest(): integer;
+var
+  a,q,n: integer;
+  m,i,k: integer;
+  f: file;
+begin
+  open_write(f,"t#red2k.dat");
+  writeln(f,"line4 = line1**line2 mod line3");
+  m := 4;
+  for k:=2 to 50 do
+    for i:=1 to 4 do
+      n := 2**(k*i*i) - random(1024);
+      while n<0 do
+         n := 2**(k*i*i) - random(1204);
+      end;
+      a := random(2*m)-m;
+      q := 1+random(m) div 2;
+      writeln(f);
+      writeln(f,a);
+      writeln(f,q);
+      writeln(f,n);
+      writeln(f, a**q mod n);
+      m := m*2;
+    end;
+  end;
+  close(f);
+end;
